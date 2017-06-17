@@ -1,0 +1,10 @@
+<h1>All Posts</h1>
+<div>
+	<% @posts.each do |post| %>
+		<h2><%= post.title %>:</h2>
+		<% if is_logged_in? %>
+			<h3>By: <%= post.user.username %></h3>
+		<%end%>
+		<p><%= post.content %></p>
+	<%end%>
+</div>

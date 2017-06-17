@@ -9,19 +9,20 @@ module SessionsHelper
 	end
 
 	def log_out
+		current_user.update_attribute(:remember_digest, nil)
   	cookies.delete :remember_token
   	cookies.delete :user_id
   	redirect_to root_path
   end
 
-	def current_user
-		current_user ||= User.find_by(id: cookies.signed[:user_id])
-			if current_user 
-				current_user 
-			end
+  def is_logged_in?
+		!current_user.nil?
 	end
 
-	def is_logged_in?
-		!current_user.nil?
+	def current_user
+		current_user ||= User.find_by(id: cookies.signed[:user_id])
+			if current_user && current_user.authenticated?(:remember, cookies.signed[:remember_token])
+				current_user 
+			end
 	end
 end

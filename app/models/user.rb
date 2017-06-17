@@ -1,5 +1,6 @@
 class User < ApplicationRecord
 	attr_accessor :remember_token 
+	has_many :posts
 	validates :email, presence: true
 	validates :username, presence: true
 	before_create :create_remember_digest
@@ -17,5 +18,11 @@ class User < ApplicationRecord
 
 	def self.digest(token)
 		Digest::SHA1.hexdigest token
+	end
+
+	def authenticated?(attribute, token)
+		digest = send("#{attribute}_digest")
+		return false if digest.nil? 
+		User.digest(token) == digest
 	end
 end
